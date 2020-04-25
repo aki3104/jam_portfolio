@@ -1,35 +1,43 @@
+
+<!-- ここから追加 -->
 <template>
   <div>
-    <Item
-      v-for="work in works"
+    <Item 
+      v-for="work in works" 
       :key="work.sys.id"
       :work="work"
     />
   </div>
 </template>
+<!-- ここまで追加 -->
 
 <script>
-import Item from '@/components/Item'
+
+import Item from '@/components/Item' // ここを追加
+
 import { createClient } from '~/plugins/contentful.js'
 const client = createClient()
 
 export default { 
+
+  // ここから追加
   components: {
     Item
   },
-  asyncData() {
+  // ここまで追加
+  
+  asyncData ({params}) {
     return Promise.all([
       client.getEntries({
-        'content_type': 'work', // workタイプの記事データを全取得
-        order: '-sys.createdAt' // 作成日時順に並べる
-      })
+        'content_type': 'work',
+        query: params.keyword, 
+        order: '-sys.createdAt'
+      }),
     ]).then(([works]) => {
-      console.log(works)
       return {
-        works: works.items // 取得したデータを配列worksに入れる
+        works: works.items
       }
     }).catch(console.error)
   }
 }
 </script>
- 

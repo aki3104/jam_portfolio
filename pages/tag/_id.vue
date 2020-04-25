@@ -12,24 +12,22 @@
 import Item from '@/components/Item'
 import { createClient } from '~/plugins/contentful.js'
 const client = createClient()
-
-export default { 
+export default {
   components: {
     Item
   },
-  asyncData() {
+  asyncData ({params}) {
     return Promise.all([
       client.getEntries({
-        'content_type': 'work', // workタイプの記事データを全取得
-        order: '-sys.createdAt' // 作成日時順に並べる
-      })
+        'content_type': 'work',
+        'fields.tag.sys.id': params.id,
+        order: '-sys.createdAt'
+      }),
     ]).then(([works]) => {
-      console.log(works)
       return {
-        works: works.items // 取得したデータを配列worksに入れる
+        works: works.items
       }
     }).catch(console.error)
   }
 }
 </script>
- 
